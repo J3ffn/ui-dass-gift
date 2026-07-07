@@ -1,3 +1,8 @@
+<script setup>
+import AppToaster from "./components/organisms/AppToaster.vue";
+</script>
+
 <template>
-  <div>Grupo Dass - Brindes</div>
+  <AppToaster />
+  <RouterView />
 </template>
