@@ -26,27 +26,34 @@ aplicação consome a API do [back-end (`bck-dass-gift`)](https://github.com/J3f
 e permite cadastrar, editar, excluir e listar funcionários com seus respectivos
 tamanhos de camiseta e calçado.
 
+## Demonstração
+
+Aplicação em produção: **[ui-dass-gift.vercel.app](https://ui-dass-gift.vercel.app/)**
+
+Consumindo o back-end em produção: [bck-dass-gift.onrender.com](https://bck-dass-gift.onrender.com/)
+(hospedado no Render. A primeira requisição vai demorar um pouco).
+
 ## Funcionalidades
 
-- **Cadastro e edição de funcionários** — modal com formulário para nome, CPF,
+- **Cadastro e edição de funcionários**: modal com formulário para nome, CPF,
   e-mail, tamanho de camiseta (PP, P, M, G, GG, XG) e tamanho de calçado (34–48).
-- **Exclusão de funcionários** — com diálogo de confirmação antes de remover.
-- **Listagem de funcionários** — tabela no desktop e cards no mobile, com
+- **Exclusão de funcionários**: com diálogo de confirmação antes de remover.
+- **Listagem de funcionários**: tabela no desktop e cards no mobile, com
   cabeçalho fixo e rolagem interna quando a lista é longa.
-- **Busca/filtros** — por nome, CPF, e-mail, tamanho de camiseta e tamanho de
+- **Busca/filtros**: por nome, CPF, e-mail, tamanho de camiseta e tamanho de
   calçado, combináveis entre si.
-- **Validação de formulário** — CPF, e-mail e tamanhos validados no front-end
+- **Validação de formulário**: CPF, e-mail e tamanhos validados no front-end
   antes do envio, além de exibir erros retornados pela API (ex.: CPF/e-mail
   já cadastrados).
-- **Feedback ao usuário** — mensagens de sucesso/erro via toast para todas as
+- **Feedback ao usuário**: mensagens de sucesso/erro via toast para todas as
   ações (criar, editar, excluir).
-- **Responsivo** — layout adaptado para desktop, tablet e mobile.
+- **Responsivo**: layout adaptado para desktop, tablet e mobile.
 
 ## Tecnologias
 
 | Categoria        | Ferramenta                              |
 | ----------------- | ---------------------------------------- |
-| Framework          | [Vue 3](https://vuejs.org/) (`<script setup>`) |
+| Framework          | [Vue 3](https://vuejs.org/) |
 | Gerência de estado | [Vuex 4](https://vuex.vuejs.org/)        |
 | Roteamento         | [Vue Router 4](https://router.vuejs.org/) |
 | Build tool          | [Vite](https://vitejs.dev/)              |
@@ -57,10 +64,9 @@ tamanhos de camiseta e calçado.
 
 ## Pré-requisitos
 
-- **Node.js** `^20.19.0` ou `>=22.12.0`
-- **npm** (instalado junto com o Node)
-- O [back-end (`bck-dass-gift`)](https://github.com/J3ffn/bck-dass-gift) rodando
-  e acessível — veja as instruções de instalação por lá
+- **Node.js** `>=20.19.0`
+- **Algum gerenicador de dependências** como: npm, yan, pnpm, etc.
+- O [back-end (`bck-dass-gift`)](https://github.com/J3ffn/bck-dass-gift) rodando local (veja as instruções de instalação por lá) ou aponte para PRD seguindo: [Configuração](#configuração)
 
 ## Instalação
 
@@ -74,13 +80,14 @@ npm install
 
 Copie o `.env.example` para `.env`:
 
-```bash
-cp .env.example .env
-```
-
 | Variável        | Descrição                          | Exemplo                  |
 | ---------------- | ------------------------------------ | -------------------------- |
 | `VITE_API_URL`   | URL base da API do back-end          | `http://localhost:3000`    |
+
+`VITE_API_URL` pode apontar para:
+
+- **back-end local**: `http://localhost:3000`, rodando conforme as instruções do repositório do back-end;
+- **back-end em PRD**: `https://bck-dass-gift.onrender.com`.
 
 ## Executando o projeto
 
@@ -90,13 +97,13 @@ Com o back-end no ar e o `.env` configurado:
 npm run dev
 ```
 
-A aplicação sobe em `http://localhost:5173` (porta padrão do Vite).
+A aplicação sobe em `http://localhost:5173`
 
 ## Build para produção
 
 ```bash
-npm run build     # gera os arquivos estáticos em dist/
-npm run preview   # serve o build de produção localmente, para conferência
+npm run build     # gera o build na pasta dist
+npm run preview   # roda o build localmente para teste
 ```
 
 ## Lint
@@ -113,18 +120,22 @@ componentes Vue:
 ```
 src/
 ├── components/
-│   ├── atoms/         # Button, Input, Select, Badge, Spinner
-│   ├── molecules/      # FormField, Modal, ConfirmDialog, ToastItem, EmployeeRowActions
-│   ├── organisms/       # EmployeeForm, EmployeeFormModal, EmployeeFilters, EmployeeTable, AppToaster
-│   └── templates/        # DefaultLayout
-├── views/               # EmployeeListView, NotFoundView
-├── router/               # configuração das rotas
+│   ├── atoms/            # Átomos unitários, ex.: Button
+│   ├── molecules/        # Molécolas que compõem atoms, ex.: Modal
+│   ├── organisms/        # Organismos que compõem moleculas, ex: AppToaster
+│   └── templates/        # Templates para as telas, ex.: DefaultLayout
+├── views/                # Telas compostas por components, ex: EmployeeListView
+├── router/               # Configuração das rotas
 ├── store/                # Vuex — módulos employee e notification
-├── services/              # cliente HTTP (Axios) e service de employee
-├── utils/                 # validadores e tratamento de erros da API
-└── style.css              # tokens de design e estilos globais
+├── services/             # Cliente HTTP (Axios) e service de employee
+├── utils/                # Validadores e tratamento de erros da API
+└── style.css             # Tokens de design e estilos globais
 ```
+
+## Design
+
+O design da aplicação no Figma: **[Grupo Dass - Gestão de Brindes (UI)](https://www.figma.com/design/mGeLtetXpdgIUVTTl9vPrp/Grupo-Dass---Gest%C3%A3o-de-Brindes--UI-?node-id=4-15)**
 
 ## Projeto relacionado
 
-- **Back-end:** [github.com/J3ffn/bck-dass-gift](https://github.com/J3ffn/bck-dass-gift) — API Node.js + Express + Prisma (PostgreSQL) consumida por esta aplicação.
+- **Back-end:** [bck-dass-gift](https://github.com/J3ffn/bck-dass-gift) — API Node.js + Express + Prisma (PostgreSQL) consumida por esta aplicação.
