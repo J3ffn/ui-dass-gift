@@ -48,8 +48,9 @@ defineEmits(["update:modelValue"]);
     :placeholder="placeholder"
     :disabled="disabled"
     :value="modelValue"
-    @input="$emit('update:modelValue', $event.target.value)"
+    @input="!mask ? $emit('update:modelValue', $event.target.value) : undefined"
     :maxlength="maxlength"
     v-maska="mask"
+    @maska="mask ? $emit('update:modelValue', $event.detail.unmasked) : undefined"
   />
 </template>

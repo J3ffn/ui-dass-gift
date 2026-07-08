@@ -1,5 +1,6 @@
 <script setup>
 import { computed, reactive, watch } from "vue";
+import { useStore } from "vuex";
 import FormField from "../molecules/FormField.vue";
 import Input from "../atoms/Input.vue";
 import Select from "../atoms/Select.vue";
@@ -9,6 +10,8 @@ import {
   SHOE_SIZE_OPTIONS,
   validateEmployeeForm,
 } from "../../utils/validators";
+
+const store = useStore();
 
 const props = defineProps({
   initialData: {
@@ -57,11 +60,38 @@ watch(
   (serverErrors) => {
     Object.keys(errors).forEach((key) => delete errors[key]);
     Object.entries(serverErrors ?? {}).forEach(([field, message]) => {
-      const key = field.startsWith("clothing.") ? field.replace("clothing.", "") : field;
+      const key = field.startsWith("clothing.")
+        ? field.replace("clothing.", "")
+        : field;
       errors[key] = message;
     });
   },
 );
+
+const buildChangedFields = () => {
+  const initial = buildInitialForm(props.initialData);
+  const payload = {};
+
+  Object.keys(form).forEach((key) => {
+    if (key === "shirtSize" || key === "shoeSize") {
+      return;
+    }
+    if (form[key] !== initial[key]) {
+      payload[key] = form[key].trim();
+    }
+  });
+
+  const shirtSizeChanged = form.shirtSize !== initial.shirtSize;
+  const shoeSizeChanged = Number(form.shoeSize) !== Number(initial.shoeSize);
+  if (shirtSizeChanged || shoeSizeChanged) {
+    payload.clothing = {
+      ...(shirtSizeChanged && { shirtSize: form.shirtSize }),
+      ...(shoeSizeChanged && { shoeSize: Number(form.shoeSize) }),
+    };
+  }
+
+  return payload;
+};
 
 const submit = () => {
   const validationErrors = validateEmployeeForm(form);
@@ -70,15 +100,30 @@ const submit = () => {
 
   if (Object.keys(validationErrors).length > 0) return;
 
-  emit("submit", {
-    name: form.name.trim(),
-    cpf: form.cpf,
-    email: form.email.trim(),
-    clothing: {
-      shirtSize: form.shirtSize,
-      shoeSize: Number(form.shoeSize),
-    },
-  });
+  if (!props.initialData) {
+    emit("submit", {
+      name: form.name.trim(),
+      cpf: form.cpf,
+      email: form.email.trim(),
+      clothing: {
+        shirtSize: form.shirtSize,
+        shoeSize: Number(form.shoeSize),
+      },
+    });
+    return;
+  }
+
+  const payload = buildChangedFields();
+
+  if (Object.keys(payload).length === 0) {
+    store.dispatch("notification/notify", {
+      message: "Nenhuma alteração para salvar.",
+      type: "info",
+    });
+    return;
+  }
+
+  emit("submit", payload);
 };
 </script>
 
